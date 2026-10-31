@@ -30,7 +30,7 @@ public class FisingRod : MonoBehaviour
         
         if (fishingRodStatusIdx == 3)
         {
-            FishingManager.instance.StartGauge();
+            FishingManager.instance.isFishCaught = true;
         }
 
         fishingRodStatusIdx %= 3;
@@ -38,8 +38,8 @@ public class FisingRod : MonoBehaviour
 
         if (fishingRodStatusIdx == 2)
         {
-            int level = FishingManager.instance.fishLevel;
-            Debug.Log($"{level} 레벨 물고기를 낚았다!");
+            int grade = FishingManager.instance.fishGrade;
+            Debug.Log($"{grade} 레벨 물고기를 낚았다!");
         }
 
         if (fishingRodStatusIdx == 0)

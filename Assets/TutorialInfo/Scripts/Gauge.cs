@@ -3,17 +3,17 @@ using UnityEngine.UI;
 
 public class Gauge : MonoBehaviour
 {
-    public Image yellow;                // 타겟 게이지 노랑 (게이지 그림을 부채꼴로 잘라 씀)
-    public Image green;                 // 타겟 게이지 초록 (노랑 위에 그려짐)
+    public Image yellow;                // 타겟 게이지 노랑
+    public Image green;                 // 타겟 게이지 초록
     public RectTransform signal;        // 호를 따라 움직이는 신호
-    public float arcRadius = 88.5f;     // 신호가 움직이는 호의 반지름 (호 중심 = 이 오브젝트의 중심)
-    public float minAngle = 12f;        // 신호가 움직이는 각도 범위 (오른쪽 0도, 위쪽 90도)
+    public float arcRadius = 88.5f;     // 신호가 움직이는 호의 반지름
+    public float minAngle = 12f;        // 신호가 움직이는 각도 범위
     public float maxAngle = 168f;
     public float greenWidth = 14f;      // 초록 구간의 각도 폭
     public float yellowWidth = 12f;     // 노랑 구간 한쪽의 각도 폭
     public float signalSpeed = 90f;     // 신호 속도 (초당 각도)
 
-    private bool isRunning = false;
+    private bool isRunning = false;     // gauge가 작동 중인지
     private float elapsed = 0f;
     private float zoneAngle;            // 초록 구간 중심 각도
     private float signalAngle;          // 신호 현재 각도
@@ -38,13 +38,7 @@ public class Gauge : MonoBehaviour
     // 매턴 타겟 게이지를 새로 만들고 게이지를 시작
     public void Begin()
     {
-        // 노랑-초록-노랑 묶음이 호 밖으로 나가지 않는 범위에서 위치를 랜덤으로 정함
-        float half = greenWidth / 2f + yellowWidth;
-        if (minAngle + half > maxAngle - half)
-        {
-            Debug.LogWarning("Gauge: 구간 폭이 신호 범위보다 커서 게이지를 시작할 수 없습니다.");
-            return;
-        }
+        float half = greenWidth / 2f + yellowWidth; // 타겟 게이지의 절반
 
         zoneAngle = Random.Range(minAngle + half, maxAngle - half);
         ShowZone(yellow, greenWidth + yellowWidth * 2f);
@@ -82,22 +76,22 @@ public class Gauge : MonoBehaviour
     {
         float diff = Mathf.Abs(signalAngle - zoneAngle);
 
-        int level;
+        int grade;
         if (diff <= greenWidth / 2f)
         {
-            level = 3;
+            grade = 3;
         }
         else if (diff <= greenWidth / 2f + yellowWidth)
         {
-            level = 2;
+            grade = 2;
         }
         else
         {
-            level = 1;
+            grade = 1;
         }
 
         isRunning = false;
-        FishingManager.instance.SetTimingResult(level);
+        FishingManager.instance.SetTimingResult(grade);
         gameObject.SetActive(false);
     }
 }
