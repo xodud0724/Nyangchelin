@@ -1,16 +1,15 @@
 {
   "dependencies": {
     "com.akiojin.unity-mcp-server": {
-      "version": "https://github.com/akiojin/unity-mcp-server.git?path=UnityMCPServer/Packages/unity-mcp-server",
+      "version": "file:com.akiojin.unity-mcp-server",
       "depth": 0,
-      "source": "git",
+      "source": "embedded",
       "dependencies": {
         "com.unity.nuget.newtonsoft-json": "3.2.1",
         "com.unity.inputsystem": "1.14.2",
         "com.unity.recorder": "4.0.0",
         "com.unity.addressables": "1.22.3"
-      },
-      "hash": "d18cb8a6622aee03463606e9b8494993f82a4cc5"
+      }
     },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
