@@ -29,7 +29,7 @@ public class Gauge : MonoBehaviour
         MoveSignal();
 
         // 스페이스 바 감지시 타이밍 판정
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (InputManager.instance.TapDown)
         {
             CheckTiming();
         }
