@@ -2,22 +2,23 @@ using UnityEngine;
 
 public class FishFight : MonoBehaviour
 {
-    public BeatRing beatRing;
+    public CatchTrack track;
+    public Note note;
     public Fish fish;
-    public FisingRod rod;
-    public float ringOffset = 150f;     // 물고기가 가려는 반대쪽으로 도넛이 떨어지는 거리
-    public int roundsToWin = 3;         // 이겨야 하는 싸움 수
-    public int hitsPerRound = 2;        // 한 싸움에서 필요한 성공 횟수
+    public int roundsToWin = 3;         // 이겨야 하는 라운드 수
+    public int turnsPerRound = 2;       // 한 라운드에서 이겨야 하는 턴 수
 
-    // 물고기가 움직이려는 방향과, 그 반대 방향의 화살표 (같은 인덱스)
+    // 물고기가 움직이는 방향 (Note.noteSprites의 0:왼쪽 1:오른쪽 2:위 3:아래와 같은 인덱스)
     private static readonly Vector2[] directions = { Vector2.left, Vector2.right, Vector2.up, Vector2.down };
-    private static readonly KeyCode[] oppositeKeys = { KeyCode.RightArrow, KeyCode.LeftArrow, KeyCode.DownArrow, KeyCode.UpArrow };
+    // 그 반대 방향의 노트 스프라이트 인덱스
+    private static readonly int[] oppositeSprites = { 1, 0, 3, 2 };
 
     private bool isRunning = false;
+    private bool needLaunch = false;    // 물고기가 다 움직이면 노트를 쏘려고 대기 중
     private int round = 0;
-    private int hits = 0;
+    private int turn = 0;
     private int dirIndex = 0;
-    private FishData data;
+    private CatchPoint targetPoint;
 
     void Update()
     {
@@ -26,14 +27,13 @@ public class FishFight : MonoBehaviour
             return;
         }
 
-        // 물고기가 다 움직인 뒤에 링이 줄어들기 시작
-        if (!beatRing.IsShrinking && !fish.IsMoving)
+        // 물고기가 다 움직인 뒤에 노트를 쏨
+        if (needLaunch && !fish.IsMoving)
         {
-            beatRing.StartShrink();
+            LaunchNote();
         }
 
-        // 링이 줄어드는 중에만 입력을 받고, 반대 방향 화살표만 인정하고 나머지 키는 무시
-        if (beatRing.IsShrinking && Input.GetKeyDown(oppositeKeys[dirIndex]))
+        if (note.IsFlying && InputManager.instance.TapDown)
         {
             Judge();
         }
@@ -42,66 +42,75 @@ public class FishFight : MonoBehaviour
     // 줄다리기 시작
     public void Begin(FishData fishData)
     {
-        data = fishData;
         round = 0;
-        fish.Ready(data);
-        gameObject.SetActive(true);
+        turn = 0;
+        fish.Ready(fishData);
+        track.Show();
         isRunning = true;
-        StartRound();
+        StartTurn();
     }
 
-    // 새 싸움: 방향을 랜덤으로 정하고 물고기와 낚싯대, 도넛을 맞춤
-    void StartRound()
+    // 새 턴: 방향을 랜덤으로 정하고 물고기를 움직임
+    void StartTurn()
     {
-        hits = 0;
         dirIndex = Random.Range(0, directions.Length);
-        Vector2 dir = directions[dirIndex];
-
-        fish.Pull(dir);
-        rod.Lean(dir);
-
-        // 도넛은 물고기가 처음 있던 자리를 기준으로, 당기는 방향의 반대쪽에 놓음
-        Vector2 screenPos = Camera.main.WorldToScreenPoint(fish.Center);
-        RectTransformUtility.ScreenPointToLocalPointInRectangle((RectTransform)transform, screenPos, null, out Vector2 fishPos);
-        ((RectTransform)beatRing.transform).anchoredPosition = fishPos - dir * ringOffset;
-        beatRing.Begin(data.ringSpeed, data.tolerance);
+        fish.Pull(directions[dirIndex]);
+        needLaunch = true;
     }
 
+    // 물고기 위치에서 랜덤 캐치포인트로 노트를 쏨 (놓쳐서 다시 쏠 때도 사용)
+    void LaunchNote()
+    {
+        needLaunch = false;
+        targetPoint = track.PickRandomPoint();
+        Vector2 from = Camera.main.WorldToScreenPoint(fish.transform.position);
+        note.Launch(from, targetPoint.Rect, oppositeSprites[dirIndex], OnNoteMissed);
+    }
+
+    // 노트를 놓치면 페널티 없이 같은 턴을 다시 시도
+    void OnNoteMissed()
+    {
+        needLaunch = true;
+    }
+
+    // 노트가 목표 포인트와 겹친 상태에서 그 포인트를 터치했을 때만 성공, 나머지 터치는 무시
     void Judge()
     {
-        if (!beatRing.IsOverlapping())
+        if (!RectTransformUtility.RectangleContainsScreenPoint(targetPoint.Rect,InputManager.instance.TapPosition, null))
         {
-            beatRing.Restart();     // 놓치면 페널티 없이 다시 시도
             return;
         }
 
-        hits++;
-        fish.Recover(1f - (float)hits / hitsPerRound * 0.5f);
-
-        if (hits < hitsPerRound)
+        if (!note.IsOverlapping())
         {
-            beatRing.Restart();
             return;
         }
 
-        round++;
+        note.Stop();
+        
+        turn++;
+
+        if (turn >= turnsPerRound)
+        {
+            turn = 0;
+            round++;
+        }
+
         if (round >= roundsToWin)
         {
             Win();
         }
         else
         {
-            StartRound();
+            StartTurn();
         }
     }
 
     void Win()
     {
         isRunning = false;
-        beatRing.Stop();
-        rod.Lean(Vector2.zero);
-        rod.SetState(2);
-        gameObject.SetActive(false);
+        needLaunch = false;
+        track.Hide();
         fish.Catch(() => FishingManager.instance.EndFight());
     }
 }

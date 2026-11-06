@@ -14,8 +14,8 @@ public class FishingManager : MonoBehaviour
 
     public Gauge gauge;                 // 타이밍 게이지 (판정이 끝나면 스스로 SetActive(false))
     public FishFight fight;             // 줄다리기 (이기면 스스로 SetActive(false))
-    public FisingRod rod;
 
+    public int baitCount = 10;
     public int fishGrade = 0;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -45,8 +45,6 @@ public class FishingManager : MonoBehaviour
             StartGauge();
             return;
         }
-
-        rod.SetState(1);
         fight.Begin(FishData.list[index]);
     }
 
@@ -54,7 +52,6 @@ public class FishingManager : MonoBehaviour
     public void EndFight()
     {
         Debug.Log($"{fishGrade} 레벨 물고기를 낚았다!");
-        rod.SetState(0);
         StartGauge();
     }
 }
