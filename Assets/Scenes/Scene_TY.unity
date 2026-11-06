@@ -1514,7 +1514,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9a8eebcd7cd7da4a9d7dd8e21274983, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FishingLine
-  rodTip: {fileID: 1177882035}
+  fishingRodTip: {fileID: 1177882035}
   fish: {fileID: 449468840}
 --- !u!212 &1046645341
 SpriteRenderer:
@@ -1629,7 +1629,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1177882035}
   m_Layer: 0
-  m_Name: RodTip
+  m_Name: FishingRodTip
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1644,7 +1644,7 @@ Transform:
   m_GameObject: {fileID: 1177882034}
   serializedVersion: 2
   m_LocalRotation: {x: -0.08715578, y: 0, z: -0, w: 0.9961947}
-  m_LocalPosition: {x: 0, y: 8.6, z: 0}
+  m_LocalPosition: {x: -0.75, y: 8.6, z: 0}
   m_LocalScale: {x: 2, y: 1.941458, z: 1.0153077}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1962,7 +1962,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 2091114218, guid: 8b94293d41db7e34fbd46ce51901ed53, type: 3}
+  m_Sprite: {fileID: 1368261286, guid: c812c837d04b9674f8cfeb0139c0c9df, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -1981,8 +1981,8 @@ Transform:
   m_GameObject: {fileID: 1670236237}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2, y: 0.5, z: 1}
+  m_LocalPosition: {x: 0, y: 3.2, z: 0}
+  m_LocalScale: {x: 1.8, y: 1.8, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
