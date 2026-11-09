@@ -1,3 +1,4 @@
+using System.Drawing;
 using UnityEngine;
 
 // 노트가 향하는 캐치포인트 5개가 놓인 트랙
@@ -16,7 +17,7 @@ public class CatchTrack : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    // 이번 노트의 목표 포인트를 랜덤으로 고르고 강조
+    // targetpoint를 random으로 설정
     public CatchPoint PickRandomPoint()
     {
         RestoreAll();
@@ -25,6 +26,20 @@ public class CatchTrack : MonoBehaviour
         point.ChangePointSprite();
         return point;
     }
+
+    public CatchPoint GetTappedPoint(Vector2 tappedPos)
+    {
+        foreach (CatchPoint point in catchPoints)
+        {
+            if (point.Contains(tappedPos))
+            {
+                return point;
+            }
+        }
+
+        // catchpoint가 아닌 다른 곳을 tap한 경우
+        return null;
+    }    
 
     // 모든 포인트를 평소 모습으로 되돌림
     void RestoreAll()

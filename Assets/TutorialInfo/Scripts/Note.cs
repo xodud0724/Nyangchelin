@@ -1,64 +1,40 @@
 using System;
 using UnityEngine;
-using UnityEngine.UI;
 
-// 물고기에서 목표 CatchPoint로 날아가는 노트 (Canvas 아래 UI Image, Screen Space - Overlay 기준)
+
 public class Note : MonoBehaviour
 {
-    public const float NoteSpeed = 100f;    // 모든 노트가 같은 속도 (캔버스 단위/초)
-
-    public Image noteImage;
-    public Sprite[] noteSprites;            // 0: 왼쪽, 1: 오른쪽, 2: 위, 3: 아래
-
-    private RectTransform target;
+    [SerializeField] private SpriteRenderer spriteRenderer;
+    [SerializeField] private Sprite[] noteSprites;
+    
+    private Vector3 spawnPos;
     private Vector3 direction;
-    private float hitRadius;                // 화면 좌표 기준, 목표 포인트의 반지름
-    private Action onMissed;
-    private bool isFlying = false;
-
-    public bool IsFlying => isFlying;
+    private float distance;            
+    private double spawnDspTime;
+    private float interval;
 
     void Update()
     {
-        if (!isFlying)
-        {
-            return;
-        }
+        // 경과 시간으로 위치를 정해서 프레임이 튀어도 도착 시각이 박에서 밀리지 않음
+        float t = (float)((AudioSettings.dspTime - spawnDspTime) / interval);
+        transform.position = spawnPos + direction * distance * t;
 
-        transform.position += direction * NoteSpeed * transform.lossyScale.x * Time.deltaTime;
-
-        // 목표 포인트를 완전히 지나쳐 버리면 놓친 것
-        if (Vector3.Dot(transform.position - target.position, direction) > hitRadius)
+        if (transform.position.y <= -5)
         {
-            Stop();
-            onMissed?.Invoke();
+            Destroy(gameObject);
         }
     }
 
-    // from: 화면 좌표(픽셀), spriteIndex: noteSprites의 인덱스
-    public void Launch(Vector2 from, RectTransform targetPoint, int spriteIndex, Action missed)
+    public void Spawn(Vector3 spawnPos, Vector3 targetPos, double spawnDspTime, float interval)
     {
-        target = targetPoint;
-        onMissed = missed;
-        hitRadius = target.rect.width * 0.5f * target.lossyScale.x;
+        this.spawnPos = spawnPos;
+        this.spawnDspTime = spawnDspTime;
+        this.interval = interval;
 
-        noteImage.sprite = noteSprites[spriteIndex];
-        transform.position = new Vector3(from.x, from.y, 0f);
-        direction = (target.position - transform.position).normalized;
+        spriteRenderer.sprite = noteSprites[0];
 
-        isFlying = true;
-        gameObject.SetActive(true);
-    }
-
-    // 지금 목표 포인트와 겹쳐 있는지
-    public bool IsOverlapping()
-    {
-        return isFlying && Vector3.Distance(transform.position, target.position) <= hitRadius;
-    }
-
-    public void Stop()
-    {
-        isFlying = false;
-        gameObject.SetActive(false);
+        Vector3 toTarget = targetPos - spawnPos;
+        distance = toTarget.magnitude;
+        direction = toTarget.normalized;
     }
 }
