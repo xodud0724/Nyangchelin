@@ -4,6 +4,12 @@ public class FishingManager : MonoBehaviour
 {
     public static FishingManager instance;
 
+    public Gauge gauge;                 // 타이밍 게이지 (판정이 끝나면 스스로 SetActive(false))
+    public TugOfWar tugOfWar;             // 줄다리기 (이기면 스스로 SetActive(false))
+
+    public int baitCount = 10;
+    public int fishGrade = 0;
+
     void Awake()
     {
         if (instance == null)
@@ -11,12 +17,6 @@ public class FishingManager : MonoBehaviour
             instance = this;
         }
     }
-
-    public Gauge gauge;                 // 타이밍 게이지 (판정이 끝나면 스스로 SetActive(false))
-    public FishFight fight;             // 줄다리기 (이기면 스스로 SetActive(false))
-
-    public int baitCount = 10;
-    public int fishGrade = 0;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -45,12 +45,14 @@ public class FishingManager : MonoBehaviour
             StartGauge();
             return;
         }
-        fight.Begin(FishData.list[index]);
+        tugOfWar.Begin(FishData.list[index]);
     }
 
     // 줄다리기를 이겨서 물고기를 낚음
-    public void EndFight()
+    public void EndTugOfWar()
     {
+        BGMManager.instance.PlayMainBGM();
+
         Debug.Log($"{fishGrade} 레벨 물고기를 낚았다!");
         StartGauge();
     }
