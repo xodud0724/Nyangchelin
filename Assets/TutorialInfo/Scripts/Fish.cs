@@ -9,8 +9,8 @@ public class Fish : MonoBehaviour
     public Transform fishingRodTip;
 
     private Vector2 spawnDir = Vector2.right; // 오른쪽 (1, 0) 기본 setting
-    private float minSpawnDist = 2f;
-    private float maxSpawnDist = 5f;
+    private float minSpawnDist = 3f;
+    private float maxSpawnDist = 8f;
 
     private float jumpHeight = 2f;
     private float jumpTime = 1f;
