@@ -55,18 +55,18 @@ public class TugOfWar : MonoBehaviour
     }
 
     // 줄다리기 시작
-    public void Begin(FishData fishData)
+    public void Begin(FishData fishData, int fishGrade)
     {
         catchTrack.Show();
 
         BGMManager.instance.PlayRhythm();
         
-        fish.Ready(fishData);
+        fish.GetData(fishData, fishGrade);
 
         successCount = 0;
 
         float totalDistance = Vector3.Distance(fish.transform.position, pullTarget.position);
-        pullStep = totalDistance / 18;
+        pullStep = totalDistance / 10;
 
         isRunning = true;
         noteSpawner.enabled = true;
@@ -87,7 +87,7 @@ public class TugOfWar : MonoBehaviour
         );
 
         // 5번 성공하면 즉시 승리
-        if (successCount >= 18)
+        if (successCount >= 10)
         {
             Win();
         }

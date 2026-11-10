@@ -27,7 +27,7 @@ public class BGMManager : MonoBehaviour
 
     public void PlayRhythm()
     {
-        BGM.RhythmBMG rhythm = bgm.rhythmBGMs[0];
+        BGM.RhythmBGM rhythm = bgm.rhythmBGMs[0];
         currentBpm = rhythm.bpm;
 
         // 시작 시각을 미리 정해 두어야 박 시각을 정확히 계산할 수 있음

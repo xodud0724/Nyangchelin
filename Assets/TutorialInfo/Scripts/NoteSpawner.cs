@@ -11,10 +11,21 @@ public class NoteSpawner : MonoBehaviour
     private float interval;
     private double nextSpawnDspTime;
 
-    public void OnEnable()
+    // spawner 가 enable 될 때 자동으로 호출, 2초 후에 note 생성 시작
+    void OnEnable()
     {
-        interval = bgm.rhythmBGMs[0].bpm / 120f;
-        nextSpawnDspTime = AudioSettings.dspTime + 2 * interval;
+        interval = 60 / bgm.rhythmBGMs[0].bpm;
+        nextSpawnDspTime = AudioSettings.dspTime + 4 * interval;
+    }
+
+    // spawner 가 disable 될 때 자동으로 호출, 남아있는 note 모두 destroy
+    void OnDisable()
+    {
+        Note[] remainingNotes = FindObjectsByType<Note>(FindObjectsSortMode.None);
+        foreach (Note note in remainingNotes)
+        {
+            Destroy(note.gameObject);
+        }
     }
 
     // Update is called once per frame
@@ -23,7 +34,7 @@ public class NoteSpawner : MonoBehaviour
         if (AudioSettings.dspTime >= nextSpawnDspTime)
         {
             SpawnNote(nextSpawnDspTime);
-            nextSpawnDspTime += interval; // 한 박자마다 note 생성
+            nextSpawnDspTime += 2 * interval; // 한 박자마다 note 생성
         }
     }
 
@@ -33,7 +44,6 @@ public class NoteSpawner : MonoBehaviour
         Vector2 targetPos = randomPoint.transform.position;
 
         Note note = Instantiate(notePrefab, spawnPoint.position, Quaternion.identity);
-        // note.Spawn(spawnPoint.position, targetPoint.position, spawnTime, interval);
-        note.Spawn(spawnPoint.position, targetPos, spawnTime, interval);
+        note.Spawn(spawnPoint.position, targetPos, spawnTime, 2 *interval);
     }
 }
