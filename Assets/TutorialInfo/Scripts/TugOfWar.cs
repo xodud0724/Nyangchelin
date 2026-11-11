@@ -54,14 +54,12 @@ public class TugOfWar : MonoBehaviour
         }
     }
 
-    // 줄다리기 시작
-    public void Begin(FishData fishData, int fishGrade)
+    // 줄다리기 시작 (당장은 info 필요없지만 추후에 사용될 수 있음)
+    public void Begin(FishData.FishInfo info, int grade)
     {
         catchTrack.Show();
 
-        BGMManager.instance.PlayRhythm();
-        
-        fish.GetData(fishData, fishGrade);
+        BGMManager.instance.PlayRhythm(grade - 1);
 
         successCount = 0;
 

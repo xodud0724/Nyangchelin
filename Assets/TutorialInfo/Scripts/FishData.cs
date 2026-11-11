@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class FishData : MonoBehaviour
@@ -13,4 +14,20 @@ public class FishData : MonoBehaviour
     }
 
     public FishInfo[] fishList;
+
+    public FishInfo GetRandomInfo(int grade)
+    {
+        List<FishInfo> candidates = new List<FishInfo>();
+        foreach (FishInfo fish in fishList)
+        {
+            if (fish.grade == grade)
+            {
+                candidates.Add(fish);
+            }
+        }
+
+        int randomIndex = Random.Range(0, candidates.Count);
+        
+        return candidates[randomIndex];
+    }
 }

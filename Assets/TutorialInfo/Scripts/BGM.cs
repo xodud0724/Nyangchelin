@@ -10,5 +10,5 @@ public class BGM : MonoBehaviour
     }
 
     public RhythmBGM[] rhythmBGMs;
-    public AudioClip[] normalBGMs;
+    public AudioClip[] mainBGMs;
 }

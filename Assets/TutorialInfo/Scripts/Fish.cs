@@ -15,12 +15,9 @@ public class Fish : MonoBehaviour
     private float jumpHeight = 2f;
     private float jumpTime = 1f;
 
-    public void GetData(FishData fishData, int fishGrade)
+    public void Spawn(FishData.FishInfo info)
     {
-        if (fishData.fishList[fishGrade].sprite != null)
-        {
-            spriteRenderer.sprite = fishData.fishList[fishGrade].sprite;
-        }
+        spriteRenderer.sprite = info.sprite;
 
         float randomDist = UnityEngine.Random.Range(minSpawnDist, maxSpawnDist);
         Vector2 spawnOffset = spawnDir.normalized * randomDist;
@@ -28,12 +25,14 @@ public class Fish : MonoBehaviour
         transform.position = new Vector2(fishingRodTip.position.x + spawnOffset.x, fishingRodTip.position.y + spawnOffset.y);
 
         gameObject.SetActive(true);
+        // 물 안에 있음
         spriteRenderer.enabled = false;
     }
 
     public void Catch(Action onDone)
     {
-        spriteRenderer.enabled = true; // 물 밖으로 모습을 드러냄!
+        // 물 밖으로 나옴
+        spriteRenderer.enabled = true;
         StartCoroutine(CatchRoutine(onDone));
     }
 
