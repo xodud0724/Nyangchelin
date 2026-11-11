@@ -3,9 +3,12 @@ using UnityEngine;
 public class BGMManager : MonoBehaviour
 {
     public static BGMManager instance;
+
     public BGM bgm;
 
     [SerializeField] private AudioSource audioSource;
+    
+    private double RhythmStartDspTime; // rhythm bgm 정밀한 시작을 위해
 
     private void Awake()
     {
@@ -19,37 +22,22 @@ public class BGMManager : MonoBehaviour
         }
     }
 
-    private double rhythmStartDspTime;      // 리듬 BGM이 실제로 재생되기 시작하는 dspTime
-    private float currentBpm = 120f;
-
-    // 한 박의 길이(초)
-    public float BeatInterval => 60f / currentBpm;
-
-    public void PlayRhythm()
+    public void PlayRhythm(int index)
     {
-        BGM.RhythmBMG rhythm = bgm.rhythmBGMs[0];
-        currentBpm = rhythm.bpm;
-
-        // 시작 시각을 미리 정해 두어야 박 시각을 정확히 계산할 수 있음
-        rhythmStartDspTime = AudioSettings.dspTime + 0.1;
+        BGM.RhythmBGM rhythm = bgm.rhythmBGMs[index];
+        RhythmStartDspTime = AudioSettings.dspTime + 0.1;
 
         audioSource.Stop();
         audioSource.clip = rhythm.clip;
-        audioSource.PlayScheduled(rhythmStartDspTime);
+        audioSource.PlayScheduled(RhythmStartDspTime);
     }
 
-    // 지금 이후에 오는 가장 가까운 박의 dspTime (곡의 첫 박이 0초라고 가정)
-    public double NextBeatDspTime()
+    public void PlayMainBGM(int index)
     {
-        double elapsed = AudioSettings.dspTime - rhythmStartDspTime;
-        double beatIndex = System.Math.Max(0, System.Math.Ceiling(elapsed / BeatInterval));
-        return rhythmStartDspTime + beatIndex * BeatInterval;
-    }
+        AudioClip main = bgm.mainBGMs[index];
 
-    public void PlayMainBGM()
-    {
         audioSource.Stop();
-        audioSource.clip = bgm.normalBGMs[0];
+        audioSource.clip = main;
         audioSource.Play();
     }
 }

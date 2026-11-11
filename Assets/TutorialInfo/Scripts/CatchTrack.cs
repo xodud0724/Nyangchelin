@@ -1,4 +1,3 @@
-using System.Drawing;
 using UnityEngine;
 
 // 노트가 향하는 캐치포인트 5개가 놓인 트랙

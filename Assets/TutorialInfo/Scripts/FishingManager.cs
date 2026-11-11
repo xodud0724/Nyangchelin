@@ -1,14 +1,24 @@
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class FishingManager : MonoBehaviour
 {
     public static FishingManager instance;
 
-    public Gauge gauge;                 // 타이밍 게이지 (판정이 끝나면 스스로 SetActive(false))
-    public TugOfWar tugOfWar;             // 줄다리기 (이기면 스스로 SetActive(false))
+    public GameObject throwButton;
+    public Gauge gauge;
+    public Fish fish;
+    public FishData fishData;
+    public FishData.FishInfo fishInfo;
+    public TugOfWar tugOfWar;
 
-    public int baitCount = 10;
-    public int fishGrade = 0;
+
+    public TMP_Text baitCountText;
+    public TMP_Text scoreText;
+
+    private int baitCount = 5;
+    private int score = 0;
 
     void Awake()
     {
@@ -21,39 +31,79 @@ public class FishingManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        StartGauge();
+        baitCount = 5;
+        score = 0;
+
+        UpdateUI();
+
+        ResetFishing();
     }
 
-    // 게이지 시작
-    public void StartGauge()
+    // 낚시 대기 상태로
+    public void ResetFishing()
     {
-        fishGrade = 0;
+        if (baitCount <= 0)
+        {
+            Debug.Log("게임 종료");
+        }
+
+        gauge.gameObject.SetActive(false);
+        throwButton.gameObject.SetActive(true);
+    }
+
+    // 낚시 시작 상태로
+    public void StartFishing()
+    {
+        throwButton.SetActive(false);
+
+        UseBait();
+
+        gauge.gameObject.SetActive(true);
         gauge.Begin();
     }
 
-    // 게이지의 판정 결과를 받고, 그 등급의 물고기와 줄다리기를 시작
+    // gauge 결과 등급에 맞는 물고기와 줄다리기 시작
     public void SetTimingResult(int grade)
     {
-        fishGrade = grade;
-        Debug.Log($"{fishGrade} 레벨 물고기가 느껴진다!");
+        Debug.Log($"{grade} 등급 물고기가 느껴진다!");
 
-        // 등급 1~3이 FishData.list의 인덱스 0~2
-        int index = grade - 1;
-        if (index < 0 || index >= FishData.list.Length)
-        {
-            Debug.LogWarning($"{grade} 등급 FishData가 list에 없다");
-            StartGauge();
-            return;
-        }
-        tugOfWar.Begin(FishData.list[index]);
+        // grade 등급 물고기 중 랜덤 info 반환
+        fishInfo = fishData.GetRandomInfo(grade);
+        fish.Spawn(fishInfo);
+
+        tugOfWar.Begin(fishInfo, grade);
     }
 
     // 줄다리기를 이겨서 물고기를 낚음
     public void EndTugOfWar()
     {
-        BGMManager.instance.PlayMainBGM();
+        Debug.Log($"{fishInfo.fishName} 레벨 물고기를 낚았다!");
 
-        Debug.Log($"{fishGrade} 레벨 물고기를 낚았다!");
-        StartGauge();
+        AddScore(fishInfo.score);
+
+        ResetFishing(); // 낚시 대기 상태로
+
+        BGMManager.instance.PlayMainBGM(1);
+    }
+
+    // 먹이 사용
+    public void UseBait()
+    {
+        baitCount--;
+        UpdateUI();
+    }
+
+    // 점수 추가
+    public void AddScore(int fishScore)
+    {
+        score += fishScore;
+        UpdateUI();
+    }
+
+    // UI text 와 실제 변수 값 동기화
+    public void UpdateUI()
+    {
+        baitCountText.text = baitCount.ToString();
+        scoreText.text = score.ToString();
     }
 }
