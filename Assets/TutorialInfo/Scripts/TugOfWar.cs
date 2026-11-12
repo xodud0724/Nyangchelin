@@ -4,6 +4,7 @@ public class TugOfWar : MonoBehaviour
 {
     public NoteSpawner noteSpawner;
     public Fish fish;
+    public FishData.FishInfo fishInfo;
     public CatchTrack catchTrack;            // 판정할 CatchPoint 5개를 가진 트랙
 
     [SerializeField] Transform pullTarget;
@@ -59,6 +60,7 @@ public class TugOfWar : MonoBehaviour
     {
         catchTrack.Show();
 
+        fishInfo = info;
         BGMManager.instance.PlayRhythm(grade - 1);
 
         successCount = 0;
@@ -87,17 +89,23 @@ public class TugOfWar : MonoBehaviour
         // 5번 성공하면 즉시 승리
         if (successCount >= 10)
         {
-            Win();
+            End();
         }
     }
 
-    public void Win()
+    public void End()
     {
         catchTrack.Hide();
 
         isRunning = false;
         noteSpawner.enabled = false;
 
-        fish.Catch(() => FishingManager.instance.EndTugOfWar());
+        fish.Catch();
+
+        Debug.Log($"{fishInfo.fishName} 을(를) 낚았다!");
+
+        FishingManager.instance.AddScore(fishInfo.score);
+        FishingManager.instance.ResetFishing(); // 낚시 대기 상태로
+        BGMManager.instance.PlayMainBGM(1);
     }
 }

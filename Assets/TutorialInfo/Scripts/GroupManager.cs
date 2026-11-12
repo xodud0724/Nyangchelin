@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class GroupManager : MonoBehaviour
 {
+    public static GroupManager instance; 
+
     public GameObject titleGroup;
     public GameObject lobbyGroup;
     public GameObject playGroup;

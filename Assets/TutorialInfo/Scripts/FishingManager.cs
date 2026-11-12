@@ -7,6 +7,9 @@ public class FishingManager : MonoBehaviour
     public static FishingManager instance;
 
     public GameObject throwButton;
+    public GameObject homeButton;
+
+    public Player player;
     public Gauge gauge;
     public Fish fish;
     public FishData fishData;
@@ -17,8 +20,8 @@ public class FishingManager : MonoBehaviour
     public TMP_Text baitCountText;
     public TMP_Text scoreText;
 
-    private int baitCount = 5;
-    private int score = 0;
+    public int baitCount;
+    public int score;
 
     void Awake()
     {
@@ -29,10 +32,12 @@ public class FishingManager : MonoBehaviour
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    void OnEnable()
     {
         baitCount = 5;
         score = 0;
+
+        homeButton.gameObject.SetActive(false);
 
         UpdateUI();
 
@@ -45,21 +50,31 @@ public class FishingManager : MonoBehaviour
         if (baitCount <= 0)
         {
             Debug.Log("게임 종료");
+            FinishFishing();
+            
+            return;
         }
 
+        player.gameObject.SetActive(false);
         gauge.gameObject.SetActive(false);
         throwButton.gameObject.SetActive(true);
     }
 
-    // 낚시 시작 상태로
+    // 낚시 시작 상태로 (throwButton click 에서 구현)
     public void StartFishing()
     {
-        throwButton.SetActive(false);
+        player.gameObject.SetActive(true);
+        throwButton.gameObject.SetActive(false);
 
         UseBait();
 
         gauge.gameObject.SetActive(true);
         gauge.Begin();
+    }
+
+    public void FinishFishing()
+    {
+        homeButton.gameObject.SetActive(true);
     }
 
     // gauge 결과 등급에 맞는 물고기와 줄다리기 시작
@@ -72,18 +87,6 @@ public class FishingManager : MonoBehaviour
         fish.Spawn(fishInfo);
 
         tugOfWar.Begin(fishInfo, grade);
-    }
-
-    // 줄다리기를 이겨서 물고기를 낚음
-    public void EndTugOfWar()
-    {
-        Debug.Log($"{fishInfo.fishName} 레벨 물고기를 낚았다!");
-
-        AddScore(fishInfo.score);
-
-        ResetFishing(); // 낚시 대기 상태로
-
-        BGMManager.instance.PlayMainBGM(1);
     }
 
     // 먹이 사용
