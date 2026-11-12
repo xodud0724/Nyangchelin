@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
@@ -7,8 +6,9 @@ public class Fish : MonoBehaviour
 {
     public SpriteRenderer spriteRenderer;
     public Transform fishingRodTip;
-
-    private Vector2 spawnDir = Vector2.right; // 오른쪽 (1, 0) 기본 setting
+    
+    private float minSpawnAngle = -150f;
+    private float maxSpawnAngle = -30f;
     private float minSpawnDist = 3f;
     private float maxSpawnDist = 8f;
 
@@ -19,24 +19,26 @@ public class Fish : MonoBehaviour
     {
         spriteRenderer.sprite = info.sprite;
 
-        float randomDist = UnityEngine.Random.Range(minSpawnDist, maxSpawnDist);
-        Vector2 spawnOffset = spawnDir.normalized * randomDist;
+        float randomAngle = Random.Range(minSpawnAngle, maxSpawnAngle);
+        float rad = randomAngle * Mathf.Deg2Rad;
+        Vector2 spawnDir = new Vector2(Mathf.Cos(rad), Mathf.Sin(rad));
+
+        float randomDist = Random.Range(minSpawnDist, maxSpawnDist);
+        Vector2 spawnOffset = spawnDir * randomDist;
 
         transform.position = new Vector2(fishingRodTip.position.x + spawnOffset.x, fishingRodTip.position.y + spawnOffset.y);
 
         gameObject.SetActive(true);
-        // 물 안에 있음
-        spriteRenderer.enabled = false;
+        spriteRenderer.enabled = false; // 물 안에 있음
     }
 
-    public void Catch(Action onDone)
+    public void Catch()
     {
-        // 물 밖으로 나옴
-        spriteRenderer.enabled = true;
-        StartCoroutine(CatchRoutine(onDone));
+        spriteRenderer.enabled = true; // 물 밖에 나옴
+        StartCoroutine(CatchRoutine());
     }
 
-    private IEnumerator CatchRoutine(Action onDone)
+    private IEnumerator CatchRoutine()
     {
         Vector3 startPos = transform.position;
         float elapsed = 0f;
@@ -49,6 +51,5 @@ public class Fish : MonoBehaviour
         }
 
         gameObject.SetActive(false); // 낚시 완전 종료 시 오브젝트 비활성화 (낚싯줄도 함께 사라짐)
-        onDone?.Invoke();
     }
 }
