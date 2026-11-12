@@ -1,5 +1,5 @@
+using System.Collections;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class FishingManager : MonoBehaviour
@@ -8,6 +8,7 @@ public class FishingManager : MonoBehaviour
 
     public GameObject throwButton;
     public GameObject homeButton;
+    public GameObject[] resultImages;
 
     public Player player;
     public Gauge gauge;
@@ -72,11 +73,6 @@ public class FishingManager : MonoBehaviour
         gauge.Begin();
     }
 
-    public void FinishFishing()
-    {
-        homeButton.gameObject.SetActive(true);
-    }
-
     // gauge 결과 등급에 맞는 물고기와 줄다리기 시작
     public void SetTimingResult(int grade)
     {
@@ -86,7 +82,21 @@ public class FishingManager : MonoBehaviour
         fishInfo = fishData.GetRandomInfo(grade);
         fish.Spawn(fishInfo);
 
+        StartCoroutine(ShowResultAndStartTug(grade));
+    }
+
+    public IEnumerator ShowResultAndStartTug(int grade)
+    {
+        int index = grade - 1;
+        resultImages[index].SetActive(true);
+        yield return new WaitForSeconds(2f);
+        resultImages[index].SetActive(false);
+
         tugOfWar.Begin(fishInfo, grade);
+    }
+    public void FinishFishing()
+    {
+        homeButton.gameObject.SetActive(true);
     }
 
     // 먹이 사용
