@@ -7,8 +7,8 @@ public class Fish : MonoBehaviour
     public SpriteRenderer spriteRenderer;
     public Transform fishingRodTip;
     
-    private float minSpawnAngle = -150f;
-    private float maxSpawnAngle = -30f;
+    private float minSpawnAngle = -160f;
+    private float maxSpawnAngle = -20f;
     private float minSpawnDist = 3f;
     private float maxSpawnDist = 8f;
 
@@ -19,7 +19,7 @@ public class Fish : MonoBehaviour
     {
         spriteRenderer.sprite = info.sprite;
 
-        float randomAngle = (Random.Range(0, 2) == 0) ? Random.Range(minSpawnAngle, -120f) : Random.Range(-60f, maxSpawnAngle);
+        float randomAngle = (Random.Range(0, 2) == 0) ? Random.Range(minSpawnAngle, -140f) : Random.Range(-40f, maxSpawnAngle);
         float rad = randomAngle * Mathf.Deg2Rad;
         Vector2 spawnDir = new Vector2(Mathf.Cos(rad), Mathf.Sin(rad));
 

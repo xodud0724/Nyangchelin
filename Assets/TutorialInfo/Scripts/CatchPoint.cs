@@ -9,11 +9,13 @@ public class CatchPoint : MonoBehaviour
     public void ChangePointSprite()
     {
         spriteRenderer.sprite = targetPointSprite;
+        transform.localScale = new Vector3(0.35f, 0.35f, 1f);
     }
 
     public void RestorePointSprite()
     {
         spriteRenderer.sprite = catchPointSprite;
+        transform.localScale = new Vector3(0.25f, 0.25f, 1f);
     }
 
     // catchpoint가 특정 position을 포함하는지

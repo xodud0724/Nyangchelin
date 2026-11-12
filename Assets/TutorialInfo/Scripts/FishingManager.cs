@@ -73,8 +73,6 @@ public class FishingManager : MonoBehaviour
         gauge.Begin();
     }
 
-    
-
     // gauge 결과 등급에 맞는 물고기와 줄다리기 시작
     public void SetTimingResult(int grade)
     {

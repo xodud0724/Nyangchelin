@@ -31,7 +31,8 @@ public class Note : MonoBehaviour
         this.spawnDspTime = spawnDspTime;
         this.travelTime = travelTime;
 
-        spriteRenderer.sprite = noteSprites[0];
+        int randomIndex = UnityEngine.Random.Range(0,3);
+        spriteRenderer.sprite = noteSprites[randomIndex];
 
         Vector3 toTarget = targetPos - spawnPos;
         distance = toTarget.magnitude;

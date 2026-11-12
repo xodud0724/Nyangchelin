@@ -28,7 +28,7 @@ RectTransform:
   m_GameObject: {fileID: 2924658530798108791}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.11, y: 0.11, z: 1}
+  m_LocalScale: {x: 0.7, y: 0.7, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -52,10 +52,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Note
   spriteRenderer: {fileID: 4628698462269534895}
   noteSprites:
-  - {fileID: -1956680173, guid: 0db8cb8afb6f7c44396ea4477d8c78f7, type: 3}
-  - {fileID: 1612464243, guid: 0db8cb8afb6f7c44396ea4477d8c78f7, type: 3}
-  - {fileID: 1174619208, guid: 0db8cb8afb6f7c44396ea4477d8c78f7, type: 3}
-  - {fileID: 1355229886, guid: 0db8cb8afb6f7c44396ea4477d8c78f7, type: 3}
+  - {fileID: 409835101, guid: d3cac0a3e08881f419c77628e589b23e, type: 3}
+  - {fileID: 984016371, guid: d3cac0a3e08881f419c77628e589b23e, type: 3}
+  - {fileID: 1161117674, guid: d3cac0a3e08881f419c77628e589b23e, type: 3}
 --- !u!222 &7307324406221039866
 CanvasRenderer:
   m_ObjectHideFlags: 0
