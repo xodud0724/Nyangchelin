@@ -19,7 +19,7 @@ public class Fish : MonoBehaviour
     {
         spriteRenderer.sprite = info.sprite;
 
-        float randomAngle = Random.Range(minSpawnAngle, maxSpawnAngle);
+        float randomAngle = (Random.Range(0, 2) == 0) ? Random.Range(minSpawnAngle, -120f) : Random.Range(-60f, maxSpawnAngle);
         float rad = randomAngle * Mathf.Deg2Rad;
         Vector2 spawnDir = new Vector2(Mathf.Cos(rad), Mathf.Sin(rad));
 
