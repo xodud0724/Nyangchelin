@@ -6,6 +6,7 @@ public class Note : MonoBehaviour
 {
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private Sprite[] noteSprites;
+    [SerializeField] private float syncOffset = 0.1f;
     
     private Vector3 spawnPos;
     private Vector3 direction;
@@ -16,7 +17,7 @@ public class Note : MonoBehaviour
     void Update()
     {
         // 경과 시간으로 위치를 정해서 프레임이 튀어도 도착 시각이 박에서 밀리지 않음
-        float t = (float)((AudioSettings.dspTime - spawnDspTime) / travelTime);
+        float t = (float)((AudioSettings.dspTime - spawnDspTime + syncOffset) / travelTime);
         transform.position = spawnPos + direction * distance * t;
 
         if (transform.position.y <= -5)
