@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 
@@ -32,7 +31,7 @@ public class Note : MonoBehaviour
         this.spawnDspTime = spawnDspTime;
         this.travelTime = travelTime;
 
-        int randomIndex = UnityEngine.Random.Range(0,3);
+        int randomIndex = Random.Range(0,3);
         spriteRenderer.sprite = noteSprites[randomIndex];
 
         Vector3 toTarget = targetPos - spawnPos;

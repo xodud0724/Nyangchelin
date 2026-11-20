@@ -6,7 +6,7 @@ public class FishData : MonoBehaviour
     [System.Serializable]
     public class FishInfo
     {
-        public int grade;
+        public TapGrade grade;
         public string fishName;
         public int score;
         public string description;
@@ -15,7 +15,7 @@ public class FishData : MonoBehaviour
 
     public FishInfo[] fishList;
 
-    public FishInfo GetRandomInfo(int grade)
+    public FishInfo GetRandomInfo(TapGrade grade)
     {
         List<FishInfo> candidates = new List<FishInfo>();
         foreach (FishInfo fish in fishList)

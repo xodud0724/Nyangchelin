@@ -1,7 +1,6 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class FishingManager : MonoBehaviour
 {
@@ -9,7 +8,7 @@ public class FishingManager : MonoBehaviour
 
     public GameObject throwButton;
     public GameObject homeButton;
-    public ResultImage resultImage;
+    public ResultImageSpawner resultImageSpawner;
 
     public Player player;
     public Gauge gauge;
@@ -75,9 +74,9 @@ public class FishingManager : MonoBehaviour
     }
 
     // gauge 결과 등급에 맞는 물고기와 줄다리기 시작
-    public void SetTimingResult(int grade)
+    public void SetTimingResult(TapGrade grade)
     {
-        Debug.Log($"{grade} 스타 급의 물고기가 느껴진다!");
+        Debug.Log($"{(int)grade} 스타 급의 물고기가 느껴진다!");
 
         // grade 등급 물고기 중 랜덤 info 반환
         fishInfo = fishData.GetRandomInfo(grade);
@@ -86,13 +85,12 @@ public class FishingManager : MonoBehaviour
         StartCoroutine(ShowResultAndStartTug(grade));
     }
 
-    public IEnumerator ShowResultAndStartTug(int grade)
+    public IEnumerator ShowResultAndStartTug(TapGrade grade)
     {
-        resultImage.SetImageActive(grade);
+        resultImageSpawner.SpawnResultImage(grade);
 
-        // result image 2초 동안 유지
-        yield return new WaitForSeconds(2f);
-        resultImage.SetImageInactive(grade);
+        // 1초 대기
+        yield return new WaitForSeconds(1f);
 
         // 줄다리기 시작
         tugOfWar.Begin(fishInfo, grade);

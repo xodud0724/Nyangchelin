@@ -4,17 +4,9 @@ public class TugOfWar : MonoBehaviour
 {
     public Fish fish;
     public FishData.FishInfo fishInfo;
-    public CatchTrack catchTrack;            // 판정할 CatchPoint 5개를 가진 트랙
+    public CatchTrack catchTrack;
     public NoteSpawner noteSpawner;
-    public ResultImage resultImage;
-
-    public enum TapGrade
-    {
-        Miss = 0,
-        Bad = 1,
-        Good = 2,
-        Perfect = 3
-    }
+    public ResultImageSpawner resultImageSpawner;
     
     [SerializeField] Transform pullTarget;
 
@@ -44,7 +36,7 @@ public class TugOfWar : MonoBehaviour
         }
     }
     
-    // 터치한 CatchPoint에 노트가 겹쳐 있으면 노트를 지우고 성공 처리
+    // tap 한 위치에 따라서 다르게 동작
     public void HandleTap()
     {
         Vector2 tappedPos = Camera.main.ScreenToWorldPoint(InputManager.instance.TapPosition);
@@ -52,7 +44,7 @@ public class TugOfWar : MonoBehaviour
         // tap한 catchpoint 파악
         CatchPoint tappedPoint = catchTrack.GetTappedPoint(tappedPos);
 
-        // 허공 touch 한 경우
+        // 허공 touch 한 경우 => 넘어감
         if (tappedPoint == null)
         {
             return;
@@ -64,7 +56,7 @@ public class TugOfWar : MonoBehaviour
         // 겹친 note 가 없는 경우 => Miss
         if (overlappingNote == null)
         {
-            resultImage.ShowAndHideResult((int)TapGrade.Miss);
+            resultImageSpawner.SpawnResultImage((int)TapGrade.Miss);
             return;
         }
 
@@ -76,7 +68,7 @@ public class TugOfWar : MonoBehaviour
             Vector2 notePos = overlappingNote.transform.position;
             TapGrade tapGrade = GetTapGrade(catchPointPos, notePos);
 
-            resultImage.ShowAndHideResult((int)tapGrade);
+            resultImageSpawner.SpawnResultImage(tapGrade);
 
             Destroy(overlappingNote.gameObject);
             OnNoteSuccess();
@@ -84,14 +76,14 @@ public class TugOfWar : MonoBehaviour
     }
 
     // 줄다리기 시작 (당장은 info 필요없지만 추후에 사용될 수 있음)
-    public void Begin(FishData.FishInfo info, int grade)
+    public void Begin(FishData.FishInfo info, TapGrade grade)
     {
-        catchTrack.Show(); // catch track 활성화
-        resultImage.SetResultImagesActive(); // result image 모두 활성화
-        resultImage.HideResultImages(); // result image 모두 숨기기     
+        catchTrack.Show(); // catch track 활성화     
 
         fishInfo = info;
-        BGMManager.instance.PlayRhythm(grade - 1);
+
+        int rhythmIndex = (int)grade - 1;
+        BGMManager.instance.PlayRhythm(rhythmIndex);
 
         successCount = 0;
 
@@ -126,8 +118,6 @@ public class TugOfWar : MonoBehaviour
     public void End()
     {
         catchTrack.Hide();
-        resultImage.SetResultImagesInactive(); // result image 모두 비활성화
-        resultImage.ShowResultImages(); // result image 모두 보이기
 
         isRunning = false;
         noteSpawner.enabled = false;

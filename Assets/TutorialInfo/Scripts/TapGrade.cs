@@ -1,0 +1,7 @@
+public enum TapGrade
+    {
+        Miss = 0,
+        Bad = 1,
+        Good = 2,
+        Perfect = 3
+    }
