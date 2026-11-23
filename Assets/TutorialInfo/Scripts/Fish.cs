@@ -1,11 +1,16 @@
-using System.Collections;
 using UnityEngine;
+using System.Collections;
 
 // 줄다리기 연출용 물고기 (승부 규칙은 FishFight가 맡고, 여기서는 움직임만 표현)
 public class Fish : MonoBehaviour
 {
-    public SpriteRenderer spriteRenderer;
+    public TugOfWar tugOfWar;
+    public FishData fishData;
     public Transform fishingRodTip;
+
+    public SpriteRenderer spriteRenderer;
+    public Sprite[] trashSprite;
+    
     
     private float minSpawnAngle = -160f;
     private float maxSpawnAngle = -20f;
@@ -40,6 +45,35 @@ public class Fish : MonoBehaviour
 
     private IEnumerator CatchRoutine()
     {
+        Vector3 startPos = transform.position;
+        float elapsed = 0f;
+
+        while (elapsed < jumpTime)
+        {
+            elapsed += Time.deltaTime;
+            transform.position = startPos + Vector3.up * (jumpHeight * (elapsed / jumpTime));
+            yield return null;
+        }
+
+        gameObject.SetActive(false); // 낚시 완전 종료 시 오브젝트 비활성화 (낚싯줄도 함께 사라짐)
+    }
+
+    public void Escape()
+    {
+        spriteRenderer.enabled = true; // 물 밖에 나옴
+        StartCoroutine(EscapeRoutine());
+    }
+
+    private IEnumerator EscapeRoutine()
+    {
+        // 낚싯대에 걸린 물고기가 쓰레기로 바뀜
+        FishingManager.instance.fishInfo = fishData.GetRandomInfo(TapGrade.Miss);
+        tugOfWar.fishInfo = fishData.GetRandomInfo(TapGrade.Miss);
+        // 랜덤 쓰레기 sprite 로 변경
+        int randomIndex = Random.Range(0,3);
+        spriteRenderer.sprite = trashSprite[randomIndex];
+        
+        
         Vector3 startPos = transform.position;
         float elapsed = 0f;
 

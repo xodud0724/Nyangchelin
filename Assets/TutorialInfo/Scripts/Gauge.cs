@@ -11,18 +11,18 @@ public class Gauge : MonoBehaviour
     public float signalRadius = 6.6f; // 신호가 움직이는 호의 반지름 (Gauge 루트 기준 로컬 단위)
     public float minAngle = 12f; // 신호가 움직이는 각도 범위
     public float maxAngle = 168f;
-    public float targetWidth1 = 14f; //  타겟 게이지 바깥 쪽 폭
-    public float targetWidth2 = 12f; // 타겟 게이지 안 쪽 폭
-    public float signalSpeed = 60f; // 신호 속도
+    public float targetWidth1 = 20f; //  타겟 게이지 바깥 쪽 폭
+    public float targetWidth2 = 16f; // 타겟 게이지 안 쪽 폭
+    public float signalSpeed = 150f; // 신호 속도
 
     private const int WedgeTextureSize = 512;
-    private const float WedgeWorldSize = 15.2f; // 부채꼴 스프라이트가 덮는 로컬 크기 (호 폭 14.92 이상)
+    private const float WedgeWorldSize = 15.2f;
 
-    private bool isGaugeRunning = false; // gauge가 작동 중인지
+    private bool isGaugeRunning = false;
     private float signalTravel = 0f;
-    private float targetAngle; // 초록 구간 중심 각도
-    private float currentSignalAngle; // 신호 현재 각도
-    private readonly Dictionary<float, Sprite> wedgeCache = new Dictionary<float, Sprite>(); // 폭별 부채꼴 마스크 스프라이트
+    private float targetAngle;
+    private float currentSignalAngle;
+    private readonly Dictionary<float, Sprite> wedgeCache = new Dictionary<float, Sprite>();
 
     // Update is called once per frame
     void Update()
@@ -131,7 +131,7 @@ public class Gauge : MonoBehaviour
         // signal 위치에 따라 속도를 다르게
         if (diff <= targetWidth2 / 2f)
         {
-            speedMultiplier = 2f; // signalSpeed = 120f
+            speedMultiplier = 1.5f; // signalSpeed = 120f
         }
         else if (diff <= targetWidth1 + targetWidth2 / 2f)
         {
@@ -153,18 +153,18 @@ public class Gauge : MonoBehaviour
     {
         float diff = Mathf.Abs(currentSignalAngle - targetAngle);
 
-        int grade;
+        TapGrade grade;
         if (diff <= targetWidth2 / 2f)
         {
-            grade = 3;
+            grade = TapGrade.Perfect;
         }
         else if (diff <= targetWidth2 / 2f + targetWidth1)
         {
-            grade = 2;
+            grade = TapGrade.Good;
         }
         else
         {
-            grade = 1;
+            grade = TapGrade.Bad;
         }
 
         isGaugeRunning = false;

@@ -8,7 +8,7 @@ public class FishingManager : MonoBehaviour
 
     public GameObject throwButton;
     public GameObject homeButton;
-    public GameObject[] resultImages;
+    public ResultImageSpawner resultImageSpawner;
 
     public Player player;
     public Gauge gauge;
@@ -16,11 +16,12 @@ public class FishingManager : MonoBehaviour
     public FishData fishData;
     public FishData.FishInfo fishInfo;
     public TugOfWar tugOfWar;
-
+    public NoteSpawner noteSpawner;
+    public BGM bgm;
 
     public TMP_Text baitCountText;
     public TMP_Text scoreText;
-
+    
     public int baitCount;
     public int score;
 
@@ -74,26 +75,48 @@ public class FishingManager : MonoBehaviour
     }
 
     // gauge 결과 등급에 맞는 물고기와 줄다리기 시작
-    public void SetTimingResult(int grade)
+    public void SetTimingResult(TapGrade grade)
     {
-        Debug.Log($"{grade} 등급 물고기가 느껴진다!");
+        Debug.Log($"{(int)grade} 스타 급의 물고기가 느껴진다!");
 
         // grade 등급 물고기 중 랜덤 info 반환
         fishInfo = fishData.GetRandomInfo(grade);
         fish.Spawn(fishInfo);
 
+        // 물고기 grade 에 따라 변수 3개 조정
+        if (grade == TapGrade.Perfect)
+        {
+            noteSpawner.slotCount = 8;
+            noteSpawner.slotLength = 30f / bgm.rhythmBGMs[0].bpm;
+            noteSpawner.maxNoteCount = 7;
+        }
+        else if (grade == TapGrade.Good)
+        {
+            noteSpawner.slotCount = 4;
+            noteSpawner.slotLength = 60f / bgm.rhythmBGMs[0].bpm;
+            noteSpawner.maxNoteCount = 4;
+        }
+        else if (grade == TapGrade.Bad)
+        {
+            noteSpawner.slotCount = 4;
+            noteSpawner.slotLength = 60f / bgm.rhythmBGMs[0].bpm;
+            noteSpawner.maxNoteCount = 4;
+        }
+
         StartCoroutine(ShowResultAndStartTug(grade));
     }
 
-    public IEnumerator ShowResultAndStartTug(int grade)
+    public IEnumerator ShowResultAndStartTug(TapGrade grade)
     {
-        int index = grade - 1;
-        resultImages[index].SetActive(true);
-        yield return new WaitForSeconds(2f);
-        resultImages[index].SetActive(false);
+        resultImageSpawner.SpawnResultImage(grade);
 
+        // 1초 대기
+        yield return new WaitForSeconds(1f);
+
+        // 줄다리기 시작
         tugOfWar.Begin(fishInfo, grade);
     }
+
     public void FinishFishing()
     {
         homeButton.gameObject.SetActive(true);

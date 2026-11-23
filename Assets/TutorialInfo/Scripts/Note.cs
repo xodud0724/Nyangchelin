@@ -1,14 +1,15 @@
-using System;
 using UnityEngine;
-
 
 public class Note : MonoBehaviour
 {
+    public CatchPoint catchPoint;
+
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private Sprite[] noteSprites;
+    [SerializeField] private float syncOffset = 0.1f;
     
-    private Vector3 spawnPos;
-    private Vector3 direction;
+    private Vector2 spawnPos;
+    private Vector2 direction;
     private float distance;            
     private double spawnDspTime;
     private float travelTime;
@@ -16,7 +17,7 @@ public class Note : MonoBehaviour
     void Update()
     {
         // 경과 시간으로 위치를 정해서 프레임이 튀어도 도착 시각이 박에서 밀리지 않음
-        float t = (float)((AudioSettings.dspTime - spawnDspTime) / travelTime);
+        float t = (float)((AudioSettings.dspTime - spawnDspTime + syncOffset) / travelTime);
         transform.position = spawnPos + direction * distance * t;
 
         if (transform.position.y <= -5)
@@ -25,13 +26,16 @@ public class Note : MonoBehaviour
         }
     }
 
-    public void Spawn(Vector3 spawnPos, Vector3 targetPos, double spawnDspTime, float travelTime)
+    public void Init(CatchPoint point, Vector2 targetPos, double spawnDspTime, float travelTime)
     {
-        this.spawnPos = spawnPos;
+        // 지금은 필요 없음
+        catchPoint = point;
+
+        spawnPos = transform.position;
         this.spawnDspTime = spawnDspTime;
         this.travelTime = travelTime;
 
-        int randomIndex = UnityEngine.Random.Range(0,3);
+        int randomIndex = Random.Range(0,3);
         spriteRenderer.sprite = noteSprites[randomIndex];
 
         Vector3 toTarget = targetPos - spawnPos;

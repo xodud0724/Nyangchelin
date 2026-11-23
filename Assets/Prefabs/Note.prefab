@@ -55,6 +55,7 @@ MonoBehaviour:
   - {fileID: 409835101, guid: d3cac0a3e08881f419c77628e589b23e, type: 3}
   - {fileID: 984016371, guid: d3cac0a3e08881f419c77628e589b23e, type: 3}
   - {fileID: 1161117674, guid: d3cac0a3e08881f419c77628e589b23e, type: 3}
+  syncOffset: 0.15
 --- !u!222 &7307324406221039866
 CanvasRenderer:
   m_ObjectHideFlags: 0
