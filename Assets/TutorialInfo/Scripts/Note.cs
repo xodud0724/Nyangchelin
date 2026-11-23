@@ -1,14 +1,15 @@
 using UnityEngine;
 
-
 public class Note : MonoBehaviour
 {
+    public CatchPoint catchPoint;
+
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private Sprite[] noteSprites;
     [SerializeField] private float syncOffset = 0.1f;
     
-    private Vector3 spawnPos;
-    private Vector3 direction;
+    private Vector2 spawnPos;
+    private Vector2 direction;
     private float distance;            
     private double spawnDspTime;
     private float travelTime;
@@ -25,9 +26,12 @@ public class Note : MonoBehaviour
         }
     }
 
-    public void Spawn(Vector3 spawnPos, Vector3 targetPos, double spawnDspTime, float travelTime)
+    public void Init(CatchPoint point, Vector2 targetPos, double spawnDspTime, float travelTime)
     {
-        this.spawnPos = spawnPos;
+        // 지금은 필요 없음
+        catchPoint = point;
+
+        spawnPos = transform.position;
         this.spawnDspTime = spawnDspTime;
         this.travelTime = travelTime;
 

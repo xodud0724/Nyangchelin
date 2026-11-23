@@ -11,8 +11,8 @@ public class Gauge : MonoBehaviour
     public float signalRadius = 6.6f; // 신호가 움직이는 호의 반지름 (Gauge 루트 기준 로컬 단위)
     public float minAngle = 12f; // 신호가 움직이는 각도 범위
     public float maxAngle = 168f;
-    public float targetWidth1 = 14f; //  타겟 게이지 바깥 쪽 폭
-    public float targetWidth2 = 12f; // 타겟 게이지 안 쪽 폭
+    public float targetWidth1 = 20f; //  타겟 게이지 바깥 쪽 폭
+    public float targetWidth2 = 16f; // 타겟 게이지 안 쪽 폭
     public float signalSpeed = 150f; // 신호 속도
 
     private const int WedgeTextureSize = 512;

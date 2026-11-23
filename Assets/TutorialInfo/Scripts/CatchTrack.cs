@@ -12,16 +12,15 @@ public class CatchTrack : MonoBehaviour
 
     public void Hide()
     {
-        RestoreAll();
+        RestoreAllSprites();
         gameObject.SetActive(false);
     }
 
-    // targetpoint를 random으로 설정
-    public CatchPoint PickRandomPoint()
+    // index 에 맞는 targetpoint 설정
+    public CatchPoint ActivatePoint(int index)
     {
-        RestoreAll();
+        CatchPoint point = catchPoints[index];
 
-        CatchPoint point = catchPoints[Random.Range(0, catchPoints.Length)];
         point.ChangePointSprite();
         return point;
     }
@@ -41,7 +40,7 @@ public class CatchTrack : MonoBehaviour
     }    
 
     // 모든 포인트를 평소 모습으로 되돌림
-    void RestoreAll()
+    public void RestoreAllSprites()
     {
         foreach (CatchPoint point in catchPoints)
         {

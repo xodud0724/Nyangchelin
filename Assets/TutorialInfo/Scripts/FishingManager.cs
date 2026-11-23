@@ -16,7 +16,8 @@ public class FishingManager : MonoBehaviour
     public FishData fishData;
     public FishData.FishInfo fishInfo;
     public TugOfWar tugOfWar;
-
+    public NoteSpawner noteSpawner;
+    public BGM bgm;
 
     public TMP_Text baitCountText;
     public TMP_Text scoreText;
@@ -81,6 +82,26 @@ public class FishingManager : MonoBehaviour
         // grade 등급 물고기 중 랜덤 info 반환
         fishInfo = fishData.GetRandomInfo(grade);
         fish.Spawn(fishInfo);
+
+        // 물고기 grade 에 따라 변수 3개 조정
+        if (grade == TapGrade.Perfect)
+        {
+            noteSpawner.slotCount = 8;
+            noteSpawner.slotLength = 30f / bgm.rhythmBGMs[0].bpm;
+            noteSpawner.maxNoteCount = 7;
+        }
+        else if (grade == TapGrade.Good)
+        {
+            noteSpawner.slotCount = 4;
+            noteSpawner.slotLength = 60f / bgm.rhythmBGMs[0].bpm;
+            noteSpawner.maxNoteCount = 4;
+        }
+        else if (grade == TapGrade.Bad)
+        {
+            noteSpawner.slotCount = 4;
+            noteSpawner.slotLength = 60f / bgm.rhythmBGMs[0].bpm;
+            noteSpawner.maxNoteCount = 4;
+        }
 
         StartCoroutine(ShowResultAndStartTug(grade));
     }

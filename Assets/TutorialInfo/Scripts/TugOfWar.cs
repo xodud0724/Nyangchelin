@@ -8,14 +8,23 @@ public class TugOfWar : MonoBehaviour
     public NoteSpawner noteSpawner;
     public ResultImageSpawner resultImageSpawner;
     
-    [SerializeField] Transform pullTarget;
+    public int targetNoteCount = 0; // noteSpawner 로부터 받아옴
+    public int targetMissCount = 5;
+    public int targetRoundCount = 3;
 
-    [SerializeField] float perfectRange = 0.35f;
-    [SerializeField] float goodRange = 0.65f;
+    private int clearedNoteCount = 0; // round 마다 초기화
+    private int missCount = 0; // tug of war 마다 초기화
+    private int clearedRoundCount = 0; // tug of war 마다 초기화
     
-    private int successCount = 0;
-    private float pullStep;
-    private bool isRunning = false;
+
+    [SerializeField] private Transform pullTarget; // 물고기가 끌려가는 곳 (낚싯대 모서리)
+
+    // note 박자 세부 판정을 위한 변수들
+    [SerializeField] private float perfectRange = 0.35f;
+    [SerializeField] private float goodRange = 0.65f;
+    
+    private float pullStep; // round 마다 얼마나 끌려오는지
+    private bool isRunning = false; // 줄다리기 중인지
 
     void Start()
     {
@@ -50,12 +59,21 @@ public class TugOfWar : MonoBehaviour
             return;
         }
 
+        tappedPoint.RestorePointSprite();
+
         // catchpoint가 포함하는 note get
         Note overlappingNote = tappedPoint.GetOverlappingNote();
 
         // 겹친 note 가 없는 경우 => Miss
         if (overlappingNote == null)
         {
+            missCount++;
+            // targetMissCount 만큼 miss 시 낚시 실패
+            if (missCount >= targetMissCount)
+            {
+                FailEnding();
+            }
+
             resultImageSpawner.SpawnResultImage((int)TapGrade.Miss);
             return;
         }
@@ -71,11 +89,12 @@ public class TugOfWar : MonoBehaviour
             resultImageSpawner.SpawnResultImage(tapGrade);
 
             Destroy(overlappingNote.gameObject);
+
             OnNoteSuccess();
         }
     }
-
-    // 줄다리기 시작 (당장은 info 필요없지만 추후에 사용될 수 있음)
+    
+    // 줄다리기 시작 (지금은 info 가 필요없지만 추후에 사용될 수 있음)
     public void Begin(FishData.FishInfo info, TapGrade grade)
     {
         catchTrack.Show(); // catch track 활성화     
@@ -85,37 +104,64 @@ public class TugOfWar : MonoBehaviour
         int rhythmIndex = (int)grade - 1;
         BGMManager.instance.PlayRhythm(rhythmIndex);
 
-        successCount = 0;
+        // count 변수 초기화
+        clearedNoteCount = 0;
+        missCount = 0;
+        clearedRoundCount = 0;
 
         float totalDistance = Vector3.Distance(fish.transform.position, pullTarget.position);
-        pullStep = totalDistance / 10;
+        pullStep = totalDistance / targetRoundCount;
 
         isRunning = true;
         noteSpawner.enabled = true;
     }
 
+    public void StartRound(int noteCount)
+    {
+        // catch point 의 sprite 모두 원상 복귀
+        catchTrack.RestoreAllSprites();
+
+        targetNoteCount = noteCount;
+        clearedNoteCount = 0;
+    }
+
     // 노트 판정 성공 시 호출
     public void OnNoteSuccess()
     {
-        if (!isRunning) return;
+        if (!isRunning)
+        {
+            return;
+        }
 
-        successCount++;
+        clearedNoteCount++;
 
-        // 내 쪽으로 1/5만큼 끌려옴
+        if (clearedNoteCount >= targetNoteCount)
+        {
+            // 라운드 성공 시 호출
+            OnRoundSuccess();
+        }
+    }
+
+    // round 승리 시 호출
+    public void OnRoundSuccess()
+    {
+        clearedRoundCount++;
+
+        // 내 쪽으로 1/targetRoundCount 만큼 끌려옴
         fish.transform.position = Vector3.MoveTowards(
             fish.transform.position, 
             pullTarget.position, 
             pullStep
         );
 
-        // 5번 성공하면 즉시 승리
-        if (successCount >= 10)
+        // targetRoundCount 번 성공하면 즉시 승리
+        if (clearedRoundCount >= targetRoundCount)
         {
-            End();
+            SuccessEnding();
         }
     }
 
-    public void End()
+    public void SuccessEnding()
     {
         catchTrack.Hide();
 
@@ -125,6 +171,22 @@ public class TugOfWar : MonoBehaviour
         fish.Catch();
 
         Debug.Log($"{fishInfo.fishName} 을(를) 낚았다!");
+
+        FishingManager.instance.AddScore(fishInfo.score);
+        FishingManager.instance.ResetFishing(); // 낚시 대기 상태로
+        BGMManager.instance.PlayMainBGM(1);
+    }
+
+    public void FailEnding()
+    {
+        catchTrack.Hide();
+
+        isRunning = false;
+        noteSpawner.enabled = false;
+
+        fish.Escape();
+
+        Debug.Log("물고기를 놓쳤다..");
 
         FishingManager.instance.AddScore(fishInfo.score);
         FishingManager.instance.ResetFishing(); // 낚시 대기 상태로

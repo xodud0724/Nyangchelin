@@ -390,10 +390,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FishData
   fishList:
   - grade: 0
-    fishName: "\uBB3C\uACE0\uAE30 \uBAA8\uD615\uC758 \uC885\uC774"
-    score: 0
+    fishName: "\uC774\uC0C1\uD55C \uC4F0\uB808\uAE30"
+    score: -10
     description: "\uBB3C\uACE0\uAE30\uAC00 \uC544\uB2C8\uB2E4!"
-    sprite: {fileID: 21300000, guid: 4473cc1b6a8643348bae41481beacd9c, type: 3}
+    sprite: {fileID: -1154397992, guid: 8475c49559ef2124dbd011ed17a847e0, type: 3}
   - grade: 1
     fishName: "\uBA4D\uB3CC\uC774"
     score: 100
@@ -587,8 +587,8 @@ MonoBehaviour:
   signalRadius: 6.6
   minAngle: 12
   maxAngle: 168
-  targetWidth1: 14
-  targetWidth2: 12
+  targetWidth1: 20
+  targetWidth2: 16
   signalSpeed: 150
 --- !u!4 &376108530
 Transform:
@@ -656,12 +656,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NoteSpawner
   bgm: {fileID: 746256482}
+  tugOfWar: {fileID: 890100464}
   notePrefab: {fileID: 2882335597257010107, guid: 14825452208216741b45d852da4ab219, type: 3}
   catchTrack: {fileID: 876938361}
-  spawnPoint: {fileID: 449468840}
+  minSpawnPosY: 4
+  maxSpawnPosY: 6
   soundEffect: {fileID: 1693718032}
   soundEffectOffset1: 0.2
   soundEffectOffset2: 0.08
+  slotCount: 0
+  slotLength: 0
+  maxNoteCount: 0
+  noteCount: 0
 --- !u!1 &399978599
 GameObject:
   m_ObjectHideFlags: 0
@@ -781,6 +787,8 @@ MonoBehaviour:
     description: 
     sprite: {fileID: 0}
   tugOfWar: {fileID: 890100464}
+  noteSpawner: {fileID: 398730472}
+  bgm: {fileID: 746256482}
   baitCountText: {fileID: 798083504}
   scoreText: {fileID: 1733797354}
   baitCount: 0
@@ -830,8 +838,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f83066b22f7a9654eb5bf3d3f9d2a41c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Fish
-  spriteRenderer: {fileID: 449468841}
+  tugOfWar: {fileID: 890100464}
+  fishData: {fileID: 105297446}
   fishingRodTip: {fileID: 1177882035}
+  spriteRenderer: {fileID: 449468841}
+  trashSprite:
+  - {fileID: -1154397992, guid: 8475c49559ef2124dbd011ed17a847e0, type: 3}
+  - {fileID: 2139653903, guid: 8475c49559ef2124dbd011ed17a847e0, type: 3}
+  - {fileID: 303934579, guid: 8475c49559ef2124dbd011ed17a847e0, type: 3}
 --- !u!4 &449468840
 Transform:
   m_ObjectHideFlags: 0
@@ -2151,7 +2165,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -1}
+  m_AnchoredPosition: {x: 0, y: -1.5}
   m_SizeDelta: {x: 50, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &876938360
@@ -2280,6 +2294,9 @@ MonoBehaviour:
   catchTrack: {fileID: 876938361}
   noteSpawner: {fileID: 398730472}
   resultImageSpawner: {fileID: 817936178}
+  targetNoteCount: 0
+  targetMissCount: 5
+  targetRoundCount: 3
   pullTarget: {fileID: 1177882035}
   perfectRange: 0.35
   goodRange: 0.65
